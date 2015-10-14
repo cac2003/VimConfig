@@ -51,16 +51,25 @@ Usage:
     stty -ixon
     stty -ixany
 </code></pre>
-  9. If the solarized color scheme does not work as expected, one may need to make the followint change to solarized.vim, which can be found in ~/.vim/bundle/vim-colors-solarized/colors
+  9. If the solarized color scheme does not work as expected, one may need to make the following change to solarized.vim, which can be found in ~/.vim/bundle/vim-colors-solarized/colors
 <pre><code>
   @@ -300,8 +300,10 @@ elseif g:solarized_termcolors != 256 && &t_Co >= 16
      let s:green       = "2"
  elseif g:solarized_termcolors == 256
      let s:vmode       = "cterm"
--    let s:base03      = "234"
--    let s:base02      = "235"
-+    let s:base03      = "NONE"
-+    let s:base02      = "NONE"
+     let s:base03      = "234"
+     let s:base02      = "235"
+     let s:base01      = "239"
+     let s:base00      = "240"
+     let s:base0       = "244"
+</code></pre>
+<pre><code>
+  @@ -300,8 +300,10 @@ elseif g:solarized_termcolors != 256 && &t_Co >= 16
+     let s:green       = "2"
+ elseif g:solarized_termcolors == 256
+     let s:vmode       = "cterm"
+     let s:base03      = "NONE"
+     let s:base02      = "NONE"
      let s:base01      = "239"
      let s:base00      = "240"
      let s:base0       = "244"
