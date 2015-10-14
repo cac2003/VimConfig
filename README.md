@@ -9,7 +9,7 @@ Dependency:
 
 Usage:
   1. Install vundle from git: git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-  2. Download powerline fonts from https://github.com/powerline/fontsto. Copy the fonts to ~/.fonts, and then run fc-cache -fv to install the fonts
+  2. Download powerline fonts from https://github.com/powerline/fonts. Copy the fonts to ~/.fonts, and then run fc-cache -fv to install the fonts
   3. Pull this repo to ~/.vim 
   4. Make a soft link ~/.vimrc to ~/.vim/vimrc 
   5. Install plugins by running ":VundleInstall" in vim
