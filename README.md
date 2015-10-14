@@ -63,7 +63,6 @@ Usage:
      let s:base00      = "240"
      let s:base0       = "244"
 </code></pre>
-
 <pre><code>
   @@ -300,8 +300,10 @@ elseif g:solarized_termcolors != 256 && &t_Co >= 16
      let s:green       = "2"
