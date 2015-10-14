@@ -75,3 +75,5 @@ Usage:
      let s:base0       = "244"
 </code></pre>
 
+Effect
+![Alt text](/screensnapshot.png?raw=true "Vim Effect")
