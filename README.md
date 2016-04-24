@@ -1,4 +1,6 @@
 # VimConfig: My vim configuration
+Effect
+![Alt text](/screensnapshot.png?raw=true "Vim Effect")
 
 Dependency:
   1. ag: the silver searcher 
@@ -74,6 +76,3 @@ Usage:
      let s:base00      = "240"
      let s:base0       = "244"
 </code></pre>
-
-Effect
-![Alt text](/screensnapshot.png?raw=true "Vim Effect")
