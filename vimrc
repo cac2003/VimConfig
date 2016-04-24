@@ -100,6 +100,10 @@ set selectmode+="key"
 "keyboard mapping
 "==============================================================================
 let mapleader = ","
+vnoremap  <silent> k gkzz
+vnoremap  <silent> j gjzz
+vnoremap  <silent> 0 g0
+vnoremap  <silent> $ g$
 nnoremap  <silent> k gkzz
 nnoremap  <silent> j gjzz
 nnoremap  <silent> 0 g0
@@ -109,7 +113,7 @@ nnoremap <silent> <c-j> <C-W>j
 nnoremap <silent> <c-h> <C-W>h
 nnoremap <silent> <c-l> <C-W>l
 
-nnoremap <F8> :BD<CR>
+noremap <F8> :BD<CR>
 
 nnoremap <Right> <C-W>>
 nnoremap <Left> <C-W><
@@ -184,7 +188,7 @@ cmap <c-n> <Down>
 "vundle setting"
 "==============================================================================
 set nocompatible              " be iMproved, required
-filetype off                  " required
+"filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -256,6 +260,8 @@ Plugin 'zenorocha/dracula-theme'
 
 Plugin 'rking/ag.vim'
 
+Plugin 'christoomey/vim-tmux-navigator'
+
 
 call vundle#end()
 filetype plugin indent on
@@ -287,8 +293,8 @@ let g:winManagerWindowLayout='TagList'
 "nmap <silent> <F8> :WMTogge<cr>  
 let g:winManagerWidth = 30  
 let g:winManagerAutoOpen=0  
-autocmd VimEnter * WMToggle
-"nmap wm :WMToggle<cr>  
+"autocmd VimEnter * WMToggle
+nmap wm :WMToggle<cr>  
 
 "NERDTree 配置  
 let g:NERDTree_title="[NERDTree]"  
@@ -452,7 +458,7 @@ let g:syntastic_c_checkers = ['gcc']
 "let g:syntastic_c_checker_args = ['-I~/research/redis/deps/hiredis']
 
 let g:syntastic_cpp_checkers = ['gcc']
-let g:syntastic_cpp_include_dirs = ['/usr/include/']
+let g:syntastic_cpp_include_dirs = ['/usr/include/', '/home/caiqc/research/memepiC/include', '/home/caiqc/research/GlobalMemory/code/include']
 let g:syntastic_cpp_remove_include_errors = 1
 let g:syntastic_cpp_check_header = 1
 let g:syntastic_cpp_compiler = 'gcc'
@@ -745,23 +751,25 @@ let g:UltiSnipsSnippetDirectories=["UltiSnips","UltiSnips"]
 
 "========================easy motion=======================
 nmap f <Plug>(easymotion-sl)
-nmap s <Plug>(easymotion-s)
-nmap t <Plug>(easymotion-s2)
-imap <leader>f <ESC><Plug>(easymotion-s) 
+map s <Plug>(easymotion-s2)
+"nmap t <Plug>(easymotion-s2)
+imap <leader>f <ESC><Plug>(easymotion-sl)
+nmap <leader>f <Plug>(easymotion-sl)
 imap <leader>s <ESC><Plug>(easymotion-s2)
+nmap <leader>s <Plug>(easymotion-s2)
 "imap <leader>t <ESC><leader>t
 
-nmap <leader>w <Plug>(easymotion-bd-wl)
-nmap <Leader>l <Plug>(easymotion-lineforward)
-nmap <Leader>j <Plug>(easymotion-j)
-nmap <Leader>k <Plug>(easymotion-k)
-nmap <Leader>h <Plug>(easymotion-linebackward)
+"nmap <leader>w <Plug>(easymotion-bd-wl)
+"nmap <Leader>l <Plug>(easymotion-lineforward)
+"nmap <Leader>j <Plug>(easymotion-j)
+"nmap <Leader>k <Plug>(easymotion-k)
+"nmap <Leader>h <Plug>(easymotion-linebackward)
 
-imap <leader>w <ESC><Plug>(easymotion-bd-wl)
-imap <Leader>l <ESC><Plug>(easymotion-lineforward)
-imap <Leader>j <ESC><Plug>(easymotion-j)
-imap <Leader>k <ESC><Plug>(easymotion-k)
-imap <Leader>h <ESC><Plug>(easymotion-linebackward)
+map <leader>w <ESC><Plug>(easymotion-bd-wl)
+map <Leader>l <ESC><Plug>(easymotion-lineforward)
+map <Leader>j <ESC><Plug>(easymotion-j)
+map <Leader>k <ESC><Plug>(easymotion-k)
+map <Leader>h <ESC><Plug>(easymotion-linebackward)
 
 let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion"
 let g:EasyMotion_smartcase = 1 "case insensitive"
@@ -853,3 +861,12 @@ endfunction
 "=====================Ag configuration==============
 let g:ag_working_path_mode="r"
 
+"======================make tmux work with vim===========
+let g:tmux_navigator_no_mappings = 1
+
+nnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
+nnoremap <silent> <c-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <c-\> :TmuxNavigatePrevious<cr>
+let g:tmux_navigator_save_on_switch = 1
