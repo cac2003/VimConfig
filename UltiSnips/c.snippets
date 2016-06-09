@@ -129,6 +129,19 @@ else
 }
 endsnippet
 
+snippet swi "switch case"
+switch(${1:/* condition */}) {
+	${2:case:}
+	default:
+		break;
+}
+endsnippet
+
+snippet cas "case" 
+case ${1:"0"}:
+	break;
+endsnippet
+
 snippet printf "printf .. (printf)"
 printf("${1:%s}\n"${1/([^%]|%%)*(%.)?.*/(?2:, :\);)/}$2${1/([^%]|%%)*(%.)?.*/(?2:\);)/}
 endsnippet

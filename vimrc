@@ -200,6 +200,7 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'taglist.vim'
 Plugin 'SuperTab'
+Plugin 'majutsushi/tagbar'
 "Plugin 'vimwiki'
 Plugin 'winmanager'
 Plugin 'bufexplorer.zip'
@@ -249,8 +250,6 @@ Plugin 'lervag/vim-latex'
 Plugin 'tpope/vim-fugitive'
 Plugin 'mhinz/vim-signify'
 
-Plugin 'craigemery/vim-autotag'
-
 "Plugin 'Rip-Rip/clang_complete'
 "Plugin 'Shougo/neocomplete.vim'
 
@@ -289,11 +288,11 @@ let Tlist_Show_Menu=1
 " winmanager配置  
 "let g:winManagerWindowLayout='TagList|FileExplorer'  
 let g:winManagerWindowLayout='NERDTree|TagList'  
-let g:winManagerWindowLayout='TagList'  
+"let g:winManagerWindowLayout='TagList'  
 "nmap <silent> <F8> :WMTogge<cr>  
 let g:winManagerWidth = 30  
-let g:winManagerAutoOpen=0  
-"autocmd VimEnter * WMToggle
+"let g:winManagerAutoOpen=0  
+autocmd VimEnter * WMToggle
 nmap wm :WMToggle<cr>  
 
 "NERDTree 配置  
@@ -304,6 +303,9 @@ endfunction
 function! NERDTree_IsValid()  
     return 1  
 endfunction   
+
+nmap <F10> :TagbarToggle<CR>
+let g:tagbar_left=1
 
 
 " go to defn of tag under the cursor
@@ -420,9 +422,15 @@ let g:ycm_filetype_blacklist = {
       \ 'mail' : 1
       \}
 
+"let g:ycm_filetype_specific_completion_to_disable = {
+"            \ 'cpp': 1
+"            \}
+
 "let g:ycm_global_ycm_extra_conf='~/.ycm/c.ycm_extra_conf.py'
 autocmd FileType c let g:ycm_global_ycm_extra_conf='/home/caiqc/.ycm/c.ycm_extra_conf.py'
 autocmd FileType cpp let g:ycm_global_ycm_extra_conf='/home/caiqc/.ycm/cpp.ycm_extra_conf.py'
+
+au BufWritePost *.c,*.cpp,*.h,*.cc silent! !ctags -R --fields=+iaSmK --extra=+q --sort=yes &
 
 let g:ycm_register_as_syntastic_checker=0
 let g:ycm_show_diagnostics_ui=0
@@ -458,7 +466,7 @@ let g:syntastic_c_checkers = ['gcc']
 "let g:syntastic_c_checker_args = ['-I~/research/redis/deps/hiredis']
 
 let g:syntastic_cpp_checkers = ['gcc']
-let g:syntastic_cpp_include_dirs = ['/usr/include/', '/home/caiqc/research/memepiC/include', '/home/caiqc/research/GlobalMemory/code/include']
+let g:syntastic_cpp_include_dirs = ['/usr/include/', '/home/caiqc/research/GlobalMemory/code/include']
 let g:syntastic_cpp_remove_include_errors = 1
 let g:syntastic_cpp_check_header = 1
 let g:syntastic_cpp_compiler = 'gcc'
@@ -472,7 +480,7 @@ let g:syntastic_enable_balloons = 1
 let g:syntastic_mode_map = { 'passive_filetypes':['tex', 'java'] }
 
 " jump to next error
-"map <F3> :lnext<CR>
+map <F3> :bnext<CR>
 
 """""""""""""""solarized powerline and colorscheme """""""""""""""""""""
 "let g:Powerline_theme='short'
@@ -659,7 +667,7 @@ let g:ctrlp_user_command = 'ag %s -i --nogroup --hidden
             \ --ignore .svn
             \ --ignore .hg
             \ --ignore .DS_Store
-            \ --ignore "aeolus-doc/**"
+            \ --ignore "doc/**"
             \ --ignore "**/*.pyc"
             \ --ignore "**/*.so"
             \ --ignore "**/*.swp"
@@ -697,11 +705,16 @@ map <leader>t :CtrlPTag<CR>
 "    \ | if exists('*'.s:cfunc) | let &l:omnifunc=s:cfunc | endif
 
 "autocmd Filetype php setlocal omnifunc=eclim#php#complete#CodeComplete
-autocmd Filetype java setlocal omnifunc=eclim#java#complete#CodeComplete
+"autocmd Filetype java setlocal omnifunc=eclim#java#complete#CodeComplete
 "let g:EclimFileTypeValidate = 0
 "let g:EclimJavaValidate = 1
-autocmd FileType c let g:EclimFileTypeValidate = 0
-autocmd FileType cpp let g:EclimFileTypeValidate = 0
+"autocmd FileType c,cpp let g:EclimFileTypeValidate = 0
+"autocmd Filetype c,cpp setlocal omnifunc=ccomplete#Complete
+"set omnifunc=ccomplete#Complete
+"set omnifunc=youcompleteme#OmniComplete
+"let g:EclimCompletionMethod = 'omnifunc'
+"let g:EclimFileTypeValidate = 0
+"setlocal omnifunc=ccomplete#Complete
 
 filetype detect
 if &ft=="java"
@@ -747,7 +760,6 @@ let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsSnippetDirectories=["UltiSnips","UltiSnips"]
 
 
-"let g:EclimCompletionMethod = 'omnifunc'
 
 "========================easy motion=======================
 nmap f <Plug>(easymotion-sl)
