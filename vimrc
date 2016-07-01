@@ -80,6 +80,8 @@ set directory=~/.backup
 
 set mouse=a         " Enable the use of the mouse.
 
+set cmdheight=2
+
 syntax on
 "set synmaxcol=80
 
@@ -201,8 +203,9 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'taglist.vim'
 Plugin 'SuperTab'
+"Plugin 'TagHighlight'
 "Plugin 'vimwiki'
-Plugin 'winmanager'
+"Plugin 'winmanager'
 Plugin 'bufexplorer.zip'
 Plugin 'The-NERD-tree'
 Plugin 'matrix.vim--Yang'
@@ -222,6 +225,11 @@ Plugin 'kien/ctrlp.vim'
 Plugin 'stephenmckinney/vim-solarized-powerline'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'Lokaltog/vim-easymotion'
+Plugin 'haya14busa/incsearch.vim'
+Plugin 'haya14busa/incsearch-easymotion.vim'
+Plugin 'haya14busa/incsearch-fuzzy.vim'
+
+
 Plugin 'Valloric/YouCompleteMe'
 "Plugin 'javacomplete'
 "Plugin 'octol/vim-cpp-enhanced-highlight'
@@ -261,7 +269,6 @@ Plugin 'zenorocha/dracula-theme'
 
 Plugin 'rking/ag.vim'
 
-
 call vundle#end()
 filetype plugin indent on
 
@@ -287,13 +294,14 @@ let Tlist_Show_Menu=1
 
 " winmanager配置  
 "let g:winManagerWindowLayout='TagList|FileExplorer'  
-let g:winManagerWindowLayout='NERDTree|TagList'  
+"let g:winManagerWindowLayout='NERDTree|TagList'  
 let g:winManagerWindowLayout='TagList'  
 let g:winManagerWidth = 30  
 let g:winManagerAutoOpen=0  
 "autocmd VimEnter * WMToggle
 "autocmd FileType c,vim,java,cpp,tex WMToggle
 
+autocmd BufEnter * lcd %:p:h
 nmap wm :WMToggle<cr>  
 
 "NERDTree 配置  
@@ -384,7 +392,7 @@ let g:ycm_warning_symbol = '⚠'
 nnoremap <leader>gc :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
-"nmap <F4> :YcmDiags<CR>
+map <F4> :lcd %:p:h<CR> :make -j<CR>
 
 "设置全局配置文件的路径
 "let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
@@ -412,14 +420,14 @@ let g:ycm_use_ultisnips_completer=1
 "let g:ycm_filetype_whitelist = { '*': 1 }
 "let g:ycm_auto_trigger = 0
 let g:ycm_filetype_blacklist = {
-      \ 'tagbar' : 1,
-      \ 'qf' : 1,
-      \ 'unite' : 1,
-      \ 'vimwiki' : 1,
-      \ 'pandoc' : 1,
-      \ 'infolog' : 1,
-      \ 'mail' : 1
-      \}
+            \ 'tagbar' : 1,
+            \ 'qf' : 1,
+            \ 'unite' : 1,
+            \ 'vimwiki' : 1,
+            \ 'pandoc' : 1,
+            \ 'infolog' : 1,
+            \ 'mail' : 1
+            \}
 
 "let g:ycm_global_ycm_extra_conf='~/.ycm/c.ycm_extra_conf.py'
 let g:ycm_global_ycm_extra_conf='/users/caiqc/.ycm/cpp.ycm_extra_conf.py'
@@ -474,7 +482,6 @@ let g:syntastic_enable_balloons = 1
 
 let g:syntastic_mode_map = { 'passive_filetypes':['tex', 'java', 'c', 'cpp'] }
 
-" jump to next error
 map <F3> :bnext<CR>
 
 """""""""""""""solarized powerline and colorscheme """""""""""""""""""""
@@ -727,25 +734,48 @@ let g:UltiSnipsSnippetDirectories=["UltiSnips","UltiSnips"]
 "let g:EclimCompletionMethod = 'omnifunc'
 
 "========================easy motion=======================
-nmap f <Plug>(easymotion-sl)
-nmap s <Plug>(easymotion-s2)
-"nmap t <Plug>(easymotion-s2)
-imap <leader>f <ESC><Plug>(easymotion-s)
-nmap <leader>f <Plug>(easymotion-sl)
-imap <leader>s <ESC><Plug>(easymotion-s2)
-nmap <leader>s <Plug>(easymotion-s2)
+map f <Plug>(easymotion-sl)
+map s <Plug>(easymotion-overwin-f2)
 
-"nmap <leader>w <Plug>(easymotion-bd-wl)
-"nmap <Leader>l <Plug>(easymotion-lineforward)
-"nmap <Leader>j <Plug>(easymotion-j)
-"nmap <Leader>k <Plug>(easymotion-k)
-nmap <Leader>h <Plug>(easymotion-linebackward)
+imap <leader>f <ESC><Plug>(easymotion-overwin-f)
+imap <leader>s <ESC><Plug>(easymotion-overwin-f2)
 
-map <leader>w <ESC><Plug>(easymotion-bd-wl)
-map <Leader>l <ESC><Plug>(easymotion-lineforward)
-map <Leader>j <ESC><Plug>(easymotion-j)
-map <Leader>k <ESC><Plug>(easymotion-k)
-map <Leader>h <ESC><Plug>(easymotion-linebackward)
+map <leader>w <Plug>(easymotion-bd-w)
+imap <leader>w <ESC><Plug>(easymotion-overwin-w)
+
+map <leader>j <Plug>(easymotion-bd-jk)
+imap <leader>j <ESC><Plug>(easymotion-overwin-line)
+
+
+" You can use other keymappings like <C-l> instead of <CR> if you want to
+" use these mappings as default search and somtimes want to move cursor with
+" EasyMotion.
+
+function! s:incsearch_config(...) abort
+    return incsearch#util#deepextend(deepcopy({
+                \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+                \   'keymap': {
+                \     "\<CR>": '<Over>(easymotion)'
+                \   },
+                \   'is_expr': 0
+                \ }), get(a:, 1, {}))
+endfunction
+
+noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
+noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
+noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
+
+function! s:config_easyfuzzymotion(...) abort
+      return extend(copy({
+        \   'converters': [incsearch#config#fuzzyword#converter()],
+        \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+        \   'keymap': {"\<CR>": '<Over>(easymotion)'},
+        \   'is_expr': 0,
+        \   'is_stay': 1
+        \ }), get(a:, 1, {}))
+endfunction
+
+noremap <silent><expr> <Space>/ incsearch#go(<SID>config_easyfuzzymotion())
 
 let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion"
 let g:EasyMotion_smartcase = 1 "case insensitive"
@@ -837,3 +867,4 @@ endfunction
 "=====================Ag configuration==============
 let g:ag_working_path_mode="r"
 
+let g:cpp_class_scope_highlight = 1

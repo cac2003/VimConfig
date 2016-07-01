@@ -101,6 +101,10 @@ private:
 	$1& operator=(const $1&);
 endsnippet
 
+snippet fora "auto for-each loop"
+for (auto& p : ${1:container}) ${0}
+endsnippet
+
 snippet forit "std::iterator for-each loop"
 for (${1:vector<T>}::iterator i = ${2:items.}begin(); i != ${2}end(); ++i) ${0}
 endsnippet
