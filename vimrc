@@ -113,7 +113,7 @@ nnoremap <silent> <c-j> <C-W>j
 nnoremap <silent> <c-h> <C-W>h
 nnoremap <silent> <c-l> <C-W>l
 
-noremap <F8> :BD<CR>
+nnoremap <F8> :BD<CR>
 
 nnoremap <Right> <C-W>>
 nnoremap <Left> <C-W><
@@ -133,7 +133,7 @@ inoremap <C-z> <ESC>ui
 
 "navigate through marks
 "map <silent> <F2> ]`         
-"nnoremap <F2> :Ag <C-r><C-w>
+nnoremap <F2> :Ag <C-r><C-w>
 inoremap <F3> <ESC>:%s/\<<C-r><C-w>\>//gc<Left><Left><Left>
 nnoremap <F3> :%s/\<<C-r><C-w>\>//gc<Left><Left><Left>
 vnoremap <F3> <ESC>:'<,'>s/\<<C-r><C-w>\>//gc<Left><Left><Left>
@@ -143,7 +143,7 @@ set synmaxcol=200
 autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
 
 
-" backspace is automatically mapped to <c-h>
+"backspace is automatically mapped to <c-h>
 "inoremap <c-s-s> <c-u> 
 "noremap! <c-d> <C-o>D
 noremap! <c-d> <DEL>
@@ -162,12 +162,13 @@ noremap! ;; <ESC>
 noremap <leader>ln <ESC>:lne<CR>
 noremap <leader>lp <ESC>:lp<CR>
 noremap <leader>lw <ESC>:lw<CR>
-noremap <leader>ln <ESC>:cn<CR>
-noremap <leader>lp <ESC>:cp<CR>
+noremap <leader>cn <ESC>:cn<CR>
+noremap <leader>cp <ESC>:cp<CR>
 noremap <leader>cw <ESC>:cw<CR>
 noremap <leader>bn <ESC>:bn<CR>
 noremap <leader>bp <ESC>:bp<CR>
 noremap <leader>bd <ESC>:bd<CR>
+
 
 
 inoremap <leader>d <ESC>d
@@ -200,7 +201,6 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'taglist.vim'
 Plugin 'SuperTab'
-Plugin 'majutsushi/tagbar'
 "Plugin 'vimwiki'
 Plugin 'winmanager'
 Plugin 'bufexplorer.zip'
@@ -253,6 +253,8 @@ Plugin 'lervag/vim-latex'
 Plugin 'tpope/vim-fugitive'
 Plugin 'mhinz/vim-signify'
 
+Plugin 'craigemery/vim-autotag'
+
 "Plugin 'Rip-Rip/clang_complete'
 "Plugin 'Shougo/neocomplete.vim'
 
@@ -261,8 +263,6 @@ Plugin 'tomasr/molokai'
 Plugin 'zenorocha/dracula-theme'
 
 Plugin 'rking/ag.vim'
-
-Plugin 'christoomey/vim-tmux-navigator'
 
 
 call vundle#end()
@@ -291,11 +291,12 @@ let Tlist_Show_Menu=1
 " winmanager配置  
 "let g:winManagerWindowLayout='TagList|FileExplorer'  
 let g:winManagerWindowLayout='NERDTree|TagList'  
-"let g:winManagerWindowLayout='TagList'  
-"nmap <silent> <F8> :WMTogge<cr>  
+let g:winManagerWindowLayout='TagList'  
 let g:winManagerWidth = 30  
-"let g:winManagerAutoOpen=0  
-autocmd VimEnter * WMToggle
+let g:winManagerAutoOpen=0  
+"autocmd VimEnter * WMToggle
+"autocmd FileType c,vim,java,cpp,tex WMToggle
+
 nmap wm :WMToggle<cr>  
 
 "NERDTree 配置  
@@ -306,9 +307,6 @@ endfunction
 function! NERDTree_IsValid()  
     return 1  
 endfunction   
-
-nmap <F10> :TagbarToggle<CR>
-let g:tagbar_left=1
 
 
 " go to defn of tag under the cursor
@@ -364,6 +362,7 @@ endif
 
 if has('ctags')
     set autochdir
+    au BufWritePost *.c,*.cpp,*.h silent! ctags -R --fields=+iaSmK --extra=+q --sort=yes &
 endif
 
 function! LoadCscope()
@@ -425,10 +424,6 @@ let g:ycm_filetype_blacklist = {
       \ 'mail' : 1
       \}
 
-"let g:ycm_filetype_specific_completion_to_disable = {
-"            \ 'cpp': 1
-"            \}
-
 "let g:ycm_global_ycm_extra_conf='~/.ycm/c.ycm_extra_conf.py'
 let g:ycm_global_ycm_extra_conf='/home/caiqc/.ycm/cpp.ycm_extra_conf.py'
 autocmd FileType c let g:ycm_global_ycm_extra_conf='/home/caiqc/.ycm/c.ycm_extra_conf.py'
@@ -441,9 +436,13 @@ let g:ycm_show_diagnostics_ui=0
 let g:ycm_echo_current_diagnostic = 1
 let g:ycm_enable_diagnostic_highlighting = 1
 
+"let g:syntastic_mode_map = { 'passive_filetypes':['tex', 'java'] }
+let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_filetypes': ['tex', 'java'] }
+nnoremap <C-w>E :SyntasticCheck<CR> :SyntasticToggleMode<CR>
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:ycm_always_populate_loc_list = 1
+let g:syntastic_quiet_message={'level':'warnings'}
 
 " make YCM compatible with UltiSnips (using supertab)
 let g:ycm_key_list_select_completion = ['<c-n>', '<Down>']
@@ -459,17 +458,15 @@ let g:SuperTabDefaultCompletionType = "context"
 let g:syntastic_debug = 0
 let g:syntastic_check_on_open = 1
 let g:syntastic_enable_signs = 1
-let g:syntastic_c_include_dirs = ['/usr/include/']
+let g:syntastic_c_include_dirs = ['/users/caiqc/research/GlobalMemory/code/include']
 let g:syntastic_c_remove_include_errors = 1
 let g:syntastic_c_check_header = 1
 let g:syntastic_c_compiler = 'gcc'
-let g:syntastic_c_compiler_options = '-std=c99'
+let g:syntastic_c_compiler_options = '-O2'
 
 let g:syntastic_c_checkers = ['gcc']
-"let g:syntastic_c_checker_args = ['-I~/research/redis/deps/hiredis']
-
 let g:syntastic_cpp_checkers = ['gcc']
-let g:syntastic_cpp_include_dirs = ['/usr/include/', '/home/caiqc/research/GlobalMemory/code/include']
+let g:syntastic_cpp_include_dirs = ['/users/caiqc/research/GlobalMemory/code/include']
 let g:syntastic_cpp_remove_include_errors = 1
 let g:syntastic_cpp_check_header = 1
 let g:syntastic_cpp_compiler = 'gcc'
@@ -480,7 +477,7 @@ let g:syntastic_warning_symbol = '⚠'
 "whether to show balloons
 let g:syntastic_enable_balloons = 1
 
-let g:syntastic_mode_map = { 'passive_filetypes':['tex', 'java'] }
+let g:syntastic_mode_map = { 'passive_filetypes':['tex', 'java', 'c', 'cpp'] }
 
 " jump to next error
 map <F3> :bnext<CR>
@@ -537,13 +534,6 @@ let g:airline_powerline_fonts=1
 
 " enable tabline
 let g:airline#extensions#tabline#enabled = 1
-" set left separator
-" let g:airline#extensions#tabline#left_sep = ''
-
-" set left separator which are not editting
-" let g:airline#extensions#tabline#left_alt_sep = ''
-" show buffer number
-"let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 
@@ -594,11 +584,12 @@ let g:airline#extensions#hunks#hunk_symbols = ['+', '~', '-']
 " set filename
 let g:airline_section_c = '%t'
 let g:airline_section_c = airline#section#create(['%t', ' ', 'readonly'])
+"let g:airline_section_y = airline#section#create_right([hostname()])
 
 " set default layout
 let g:airline#extensions#default#layout = [
             \ [ 'a', 'b', 'c', ],
-            \ [ 'x', 'y', 'z', ]
+            \ [ 'x', 'y', 'z' ]
             \ ]
 
 " control the auto-truncation of airline
@@ -613,26 +604,6 @@ let g:airline#extensions#default#section_truncate_width = {}
 """"""""""tmuxline""""""""""""""""""""""
 let g:airline#extensions#tmuxline#enabled = 0
 let g:tmuxline_theme = 'airline_virtual'
-"let g:tmuxline_theme = 'vim_statusline_3'
-"let g:tmuxline_preset = {
-"      \'a'    : '#S',
-"      \'b'    : '#W',
-"      \'c'    : '#H',
-"      \'win'  : '#I #W',
-"      \'cwin' : '#I #W',
-"      \'x'    : '#(date)',
-"      \'y'    : '#W %R',
-"      \'z'    : '#H'}
-
-"let g:tmuxline_preset = {
-"      \'a'    : '#(whoami)',
-"      \'b'    : '#H',
-"      \'c'    : '#(date)',
-"      \'win'  : ['#I', '#W'],
-"      \'cwin' : ['#I', '#W', '#F'],
-"      \'y'    : ['#(uptime | cut -d " " -f 3,4,5,6,7,8,9,10,11,12,13,14)'],
-"      \'z'    : '#H'}
-
 
 let g:tmuxline_preset = {
             \'a'    : '#(whoami)',
@@ -708,16 +679,11 @@ map <leader>t :CtrlPTag<CR>
 "    \ | if exists('*'.s:cfunc) | let &l:omnifunc=s:cfunc | endif
 
 "autocmd Filetype php setlocal omnifunc=eclim#php#complete#CodeComplete
-"autocmd Filetype java setlocal omnifunc=eclim#java#complete#CodeComplete
+autocmd Filetype java setlocal omnifunc=eclim#java#complete#CodeComplete
 "let g:EclimFileTypeValidate = 0
 "let g:EclimJavaValidate = 1
-"autocmd FileType c,cpp let g:EclimFileTypeValidate = 0
-"autocmd Filetype c,cpp setlocal omnifunc=ccomplete#Complete
-"set omnifunc=ccomplete#Complete
-"set omnifunc=youcompleteme#OmniComplete
-"let g:EclimCompletionMethod = 'omnifunc'
-"let g:EclimFileTypeValidate = 0
-"setlocal omnifunc=ccomplete#Complete
+autocmd FileType c let g:EclimFileTypeValidate = 0
+autocmd FileType cpp let g:EclimFileTypeValidate = 0
 
 filetype detect
 if &ft=="java"
@@ -748,7 +714,7 @@ if &ft=="java"
     "noremap <C-]> :JavaSearch -t all -x declarations -s project -a edit <C-R><C-W> <cr>
     let g:EclimJavaSearchSingleResult = "edit"
 else
-    nnoremap <F5> :YcmDiags<CR>
+    nnoremap <F5> :SyntasticCheck<CR>
 endif
 
 let g:delimitMate_expand_cr=1
@@ -763,6 +729,7 @@ let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsSnippetDirectories=["UltiSnips","UltiSnips"]
 
 
+"let g:EclimCompletionMethod = 'omnifunc'
 
 "========================easy motion=======================
 "nmap f <Plug>(easymotion-sl)
@@ -792,10 +759,10 @@ map <leader>s <Plug>(easymotion-overwin-f2)
 imap <leader>f <ESC><Plug>(easymotion-sl)
 imap <leader>s <ESC><Plug>(easymotion-overwin-f2)
 
-map <leader>w <Plug>(easymotion-bd-w)
+map <leader>w <Plug>(easymotion-overwin-w)
 imap <leader>w <ESC><Plug>(easymotion-overwin-w)
 
-map <leader>j <Plug>(easymotion-bd-jk)
+map <leader>j <Plug>(easymotion-overwin-line)
 imap <leader>j <ESC><Plug>(easymotion-overwin-line)
 
 
@@ -919,12 +886,3 @@ endfunction
 "=====================Ag configuration==============
 let g:ag_working_path_mode="r"
 
-"======================make tmux work with vim===========
-let g:tmux_navigator_no_mappings = 1
-
-nnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
-nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
-nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
-nnoremap <silent> <c-j> :TmuxNavigateDown<cr>
-nnoremap <silent> <c-\> :TmuxNavigatePrevious<cr>
-let g:tmux_navigator_save_on_switch = 1
