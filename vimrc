@@ -228,8 +228,6 @@ Plugin 'Lokaltog/vim-easymotion'
 Plugin 'haya14busa/incsearch.vim'
 Plugin 'haya14busa/incsearch-easymotion.vim'
 Plugin 'haya14busa/incsearch-fuzzy.vim'
-
-
 Plugin 'Valloric/YouCompleteMe'
 "Plugin 'javacomplete'
 "Plugin 'octol/vim-cpp-enhanced-highlight'
@@ -430,8 +428,10 @@ let g:ycm_filetype_blacklist = {
             \}
 
 "let g:ycm_global_ycm_extra_conf='~/.ycm/c.ycm_extra_conf.py'
-let g:ycm_global_ycm_extra_conf='/users/caiqc/.ycm/cpp.ycm_extra_conf.py'
-autocmd FileType c let g:ycm_global_ycm_extra_conf='/users/caiqc/.ycm/c.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf='/home/caiqc/.ycm/cpp.ycm_extra_conf.py'
+autocmd FileType c let g:ycm_global_ycm_extra_conf='/home/caiqc/.ycm/c.ycm_extra_conf.py'
+
+au BufWritePost *.c,*.cpp,*.h,*.cc silent! !ctags -R --fields=+iaSmK --extra=+q --sort=yes &
 
 let g:ycm_register_as_syntastic_checker=0
 let g:ycm_show_diagnostics_ui=0
@@ -735,15 +735,15 @@ let g:UltiSnipsSnippetDirectories=["UltiSnips","UltiSnips"]
 
 "========================easy motion=======================
 map f <Plug>(easymotion-sl)
-map s <Plug>(easymotion-overwin-f2)
+map <leader>s <Plug>(easymotion-overwin-f2)
 
-imap <leader>f <ESC><Plug>(easymotion-overwin-f)
+imap <leader>f <ESC><Plug>(easymotion-sl)
 imap <leader>s <ESC><Plug>(easymotion-overwin-f2)
 
-map <leader>w <Plug>(easymotion-bd-w)
+map <leader>w <Plug>(easymotion-overwin-w)
 imap <leader>w <ESC><Plug>(easymotion-overwin-w)
 
-map <leader>j <Plug>(easymotion-bd-jk)
+map <leader>j <Plug>(easymotion-overwin-line)
 imap <leader>j <ESC><Plug>(easymotion-overwin-line)
 
 
