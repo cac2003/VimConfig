@@ -188,7 +188,7 @@ cmap <c-n> <Down>
 "vundle setting"
 "==============================================================================
 set nocompatible              " be iMproved, required
-"filetype off                  " required
+filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -222,6 +222,9 @@ Plugin 'kien/ctrlp.vim'
 Plugin 'stephenmckinney/vim-solarized-powerline'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'Lokaltog/vim-easymotion'
+Plugin 'haya14busa/incsearch.vim'
+Plugin 'haya14busa/incsearch-fuzzy.vim'
+Plugin 'haya14busa/incsearch-easymotion.vim'
 Plugin 'Valloric/YouCompleteMe'
 "Plugin 'javacomplete'
 "Plugin 'octol/vim-cpp-enhanced-highlight'
@@ -427,8 +430,8 @@ let g:ycm_filetype_blacklist = {
 "            \}
 
 "let g:ycm_global_ycm_extra_conf='~/.ycm/c.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf='/home/caiqc/.ycm/cpp.ycm_extra_conf.py'
 autocmd FileType c let g:ycm_global_ycm_extra_conf='/home/caiqc/.ycm/c.ycm_extra_conf.py'
-autocmd FileType cpp let g:ycm_global_ycm_extra_conf='/home/caiqc/.ycm/cpp.ycm_extra_conf.py'
 
 au BufWritePost *.c,*.cpp,*.h,*.cc silent! !ctags -R --fields=+iaSmK --extra=+q --sort=yes &
 
@@ -762,26 +765,69 @@ let g:UltiSnipsSnippetDirectories=["UltiSnips","UltiSnips"]
 
 
 "========================easy motion=======================
-nmap f <Plug>(easymotion-sl)
-map s <Plug>(easymotion-s2)
-"nmap t <Plug>(easymotion-s2)
+"nmap f <Plug>(easymotion-sl)
+"map s <Plug>(easymotion-s2)
+""nmap t <Plug>(easymotion-s2)
+"imap <leader>f <ESC><Plug>(easymotion-sl)
+"nmap <leader>f <Plug>(easymotion-sl)
+"imap <leader>s <ESC><Plug>(easymotion-s2)
+"nmap <leader>s <Plug>(easymotion-s2)
+""imap <leader>t <ESC><leader>t
+"
+""nmap <leader>w <Plug>(easymotion-bd-wl)
+""nmap <Leader>l <Plug>(easymotion-lineforward)
+""nmap <Leader>j <Plug>(easymotion-j)
+""nmap <Leader>k <Plug>(easymotion-k)
+""nmap <Leader>h <Plug>(easymotion-linebackward)
+"
+"map <leader>w <ESC><Plug>(easymotion-bd-wl)
+"map <Leader>l <ESC><Plug>(easymotion-lineforward)
+"map <Leader>j <ESC><Plug>(easymotion-j)
+"map <Leader>k <ESC><Plug>(easymotion-k)
+"map <Leader>h <ESC><Plug>(easymotion-linebackward)
+
+map f <Plug>(easymotion-sl)
+map <leader>s <Plug>(easymotion-overwin-f2)
+
 imap <leader>f <ESC><Plug>(easymotion-sl)
-nmap <leader>f <Plug>(easymotion-sl)
-imap <leader>s <ESC><Plug>(easymotion-s2)
-nmap <leader>s <Plug>(easymotion-s2)
-"imap <leader>t <ESC><leader>t
+imap <leader>s <ESC><Plug>(easymotion-overwin-f2)
 
-"nmap <leader>w <Plug>(easymotion-bd-wl)
-"nmap <Leader>l <Plug>(easymotion-lineforward)
-"nmap <Leader>j <Plug>(easymotion-j)
-"nmap <Leader>k <Plug>(easymotion-k)
-"nmap <Leader>h <Plug>(easymotion-linebackward)
+map <leader>w <Plug>(easymotion-bd-w)
+imap <leader>w <ESC><Plug>(easymotion-overwin-w)
 
-map <leader>w <ESC><Plug>(easymotion-bd-wl)
-map <Leader>l <ESC><Plug>(easymotion-lineforward)
-map <Leader>j <ESC><Plug>(easymotion-j)
-map <Leader>k <ESC><Plug>(easymotion-k)
-map <Leader>h <ESC><Plug>(easymotion-linebackward)
+map <leader>j <Plug>(easymotion-bd-jk)
+imap <leader>j <ESC><Plug>(easymotion-overwin-line)
+
+
+" You can use other keymappings like <C-l> instead of <CR> if you want to
+" use these mappings as default search and somtimes want to move cursor with
+" EasyMotion.
+
+function! s:incsearch_config(...) abort
+    return incsearch#util#deepextend(deepcopy({
+                \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+                \   'keymap': {
+                \     "\<CR>": '<Over>(easymotion)'
+                \   },
+                \   'is_expr': 0
+                \ }), get(a:, 1, {}))
+endfunction
+
+noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
+noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
+noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
+
+function! s:config_easyfuzzymotion(...) abort
+      return extend(copy({
+        \   'converters': [incsearch#config#fuzzyword#converter()],
+        \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+        \   'keymap': {"\<CR>": '<Over>(easymotion)'},
+        \   'is_expr': 0,
+        \   'is_stay': 1
+        \ }), get(a:, 1, {}))
+endfunction
+
+noremap <silent><expr> <Space>/ incsearch#go(<SID>config_easyfuzzymotion())
 
 let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion"
 let g:EasyMotion_smartcase = 1 "case insensitive"
